@@ -5,11 +5,12 @@ int main(int argc, char **argv) {
     abcg::Application app(argc, argv);
 
     Window window;
-    window.setOpenGLSettings({.samples = 2, .doubleBuffering = false});
-    window.setWindowSettings({.width = 600,
-                              .height = 600,
-                              .showFullscreenButton = false,
-                              .title = "Ensinando Matemática Financeira"});
+    window.setOpenGLSettings({.samples = 4});
+    window.setWindowSettings({
+        .width = 600,
+        .height = 600,
+        .title = "LookAt Camera",
+    });
 
     app.run(window);
   } catch (std::exception const &exception) {
@@ -18,4 +19,3 @@ int main(int argc, char **argv) {
   }
   return 0;
 }
-
