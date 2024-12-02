@@ -179,7 +179,7 @@ void Window::onPaint() {
 
   // Draw white bunny
   glm::mat4 model{1.0f};
-  model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0f));
+  model = glm::translate(model, glm::vec3(-1.25f, 0.0f, 0.0f));
   model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 1, 0));
   model = glm::scale(model, glm::vec3(0.5f));
 
@@ -194,7 +194,7 @@ void Window::onPaint() {
   
   // Draw yellow bunny
   model = glm::mat4(1.0);
-  model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
+  model = glm::translate(model, glm::vec3(-0.75f, 0.6f, -0.0f));
   model = glm::scale(model, glm::vec3(0.5f));
 
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
@@ -202,9 +202,21 @@ void Window::onPaint() {
   abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
                        nullptr);
 
+
+  // Draw green bunny
+  model = glm::mat4(1.0);
+  model = glm::translate(model, glm::vec3(0.0f, 1.0f, -0.0f));
+  model = glm::scale(model, glm::vec3(0.5f));
+
+  abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+  abcg::glUniform4f(m_colorLocation, 0.0f, 0.8f, 0.0f, 1.0f);
+  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+                       nullptr);
+
+
   // Draw blue bunny
   model = glm::mat4(1.0);
-  model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
+  model = glm::translate(model, glm::vec3(0.75f, 0.6f, 0.0f));
   model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
   model = glm::scale(model, glm::vec3(0.5f));
 
@@ -213,9 +225,11 @@ void Window::onPaint() {
   abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
                        nullptr);
 
+
   // Draw red bunny
   model = glm::mat4(1.0);
-  model = glm::scale(model, glm::vec3(0.1f));
+  model = glm::translate(model, glm::vec3(1.25f, 0.0f, 0.0f));
+  model = glm::scale(model, glm::vec3(0.5f));
 
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(m_colorLocation, 1.0f, 0.25f, 0.25f, 1.0f);
@@ -223,6 +237,7 @@ void Window::onPaint() {
                        nullptr);
 
   abcg::glBindVertexArray(0);
+
 
   // Draw ground
   //m_ground.paint();
@@ -247,24 +262,28 @@ void Window::onPaintUI() {
     auto const [mouseX, mouseY] = ImGui::GetMousePos();
 
     // Verificar clique no bunny branco
-    if (isSphereClicked(glm::vec3(-1.0f, 0.0f, 0.0f), 0.5f, mouseX, mouseY)) {
+    if (isSphereClicked(glm::vec3(-1.5f, 0.0f, 0.0f), 0.5f, mouseX, mouseY)) {
       objectVisibility["whiteBunny"] = !objectVisibility["whiteBunny"];
-      clickedMessage = objectVisibility["whiteBunny"] ? "Você clicou no bunny branco!" : "";
+      clickedMessage = objectVisibility["whiteBunny"] ? "White!" : "";
+    }
+    else if (isSphereClicked(glm::vec3(-0.75f, 0.6f, -0.0f), 0.5f, mouseX, mouseY)) {
+      objectVisibility["yellowBunny"] = !objectVisibility["yellowBunny"];
+      clickedMessage = objectVisibility["yellowBunny"] ? "Yellow!" : "";
     }
     // Verificar clique no bunny amarelo
-    else if (isSphereClicked(glm::vec3(0.0f, 0.0f, -1.0f), 0.5f, mouseX, mouseY)) {
+    else if (isSphereClicked(glm::vec3(0.0f, 1.0f, -0.0f), 0.5f, mouseX, mouseY)) {
       objectVisibility["yellowBunny"] = !objectVisibility["yellowBunny"];
-      clickedMessage = objectVisibility["yellowBunny"] ? "Você clicou no bunny amarelo!" : "";
+      clickedMessage = objectVisibility["yellowBunny"] ? "Green!" : "";
     }
     // Verificar clique no bunny azul
-    else if (isSphereClicked(glm::vec3(1.0f, 0.0f, 0.0f), 0.5f, mouseX, mouseY)) {
+    else if (isSphereClicked(glm::vec3(0.75f, 0.6f, 0.0f), 0.5f, mouseX, mouseY)) {
       objectVisibility["blueBunny"] = !objectVisibility["blueBunny"];
-      clickedMessage = objectVisibility["blueBunny"] ? "Você clicou no bunny azul!" : "";
+      clickedMessage = objectVisibility["blueBunny"] ? "Blue!" : "";
     }
     // Verificar clique no bunny vermelho
-    else if (isSphereClicked(glm::vec3(0.0f, 0.0f, 0.0f), 0.1f, mouseX, mouseY)) {
+    else if (isSphereClicked(glm::vec3(1.5f, 0.0f, 0.0f), 0.5f, mouseX, mouseY)) {
       objectVisibility["redBunny"] = !objectVisibility["redBunny"];
-      clickedMessage = objectVisibility["redBunny"] ? "Você clicou no bunny vermelho!" : "";
+      clickedMessage = objectVisibility["redBunny"] ? "Red!" : "";
     }
   }
   
