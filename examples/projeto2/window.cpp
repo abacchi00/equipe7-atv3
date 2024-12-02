@@ -52,7 +52,7 @@ void Window::onCreate() {
   abcg::glClearColor(0, 0, 0, 1);
 
   // Enable depth buffering
-  //abcg::glEnable(GL_DEPTH_TEST);
+  abcg::glEnable(GL_DEPTH_TEST);
 
   // Create program
   m_program =
@@ -230,28 +230,51 @@ void Window::onPaint() {
   abcg::glUseProgram(0);
 }
 
+
+
 void Window::onPaintUI() { 
   abcg::OpenGLWindow::onPaintUI(); 
   
-  static bool showBottomPanel{false};
+  static std::unordered_map<std::string, bool> objectVisibility{
+      {"whiteBunny", false},
+      {"yellowBunny", false},
+      {"blueBunny", false},
+      {"redBunny", false}};
+  static std::string clickedMessage{""}; // Armazena a mensagem do objeto clicado
 
+  // Detectar cliques do mouse nos objetos bunny usando raycasting
+  if (ImGui::IsMouseClicked(0)) { // Botão esquerdo do mouse
+    auto const [mouseX, mouseY] = ImGui::GetMousePos();
 
-  // Detect mouse clicks on white bunny using raycasting
-  if (ImGui::IsMouseClicked(0)) { // Left mouse button
-    //showBottomPanel = !showBottomPanel;
-      auto const [mouseX, mouseY] = ImGui::GetMousePos();
-      if (isBunnyClicked(mouseX, mouseY)) {
-        showBottomPanel = !showBottomPanel; // Toggle panel visibility
-      }
+    // Verificar clique no bunny branco
+    if (isSphereClicked(glm::vec3(-1.0f, 0.0f, 0.0f), 0.5f, mouseX, mouseY)) {
+      objectVisibility["whiteBunny"] = !objectVisibility["whiteBunny"];
+      clickedMessage = objectVisibility["whiteBunny"] ? "Você clicou no bunny branco!" : "";
+    }
+    // Verificar clique no bunny amarelo
+    else if (isSphereClicked(glm::vec3(0.0f, 0.0f, -1.0f), 0.5f, mouseX, mouseY)) {
+      objectVisibility["yellowBunny"] = !objectVisibility["yellowBunny"];
+      clickedMessage = objectVisibility["yellowBunny"] ? "Você clicou no bunny amarelo!" : "";
+    }
+    // Verificar clique no bunny azul
+    else if (isSphereClicked(glm::vec3(1.0f, 0.0f, 0.0f), 0.5f, mouseX, mouseY)) {
+      objectVisibility["blueBunny"] = !objectVisibility["blueBunny"];
+      clickedMessage = objectVisibility["blueBunny"] ? "Você clicou no bunny azul!" : "";
+    }
+    // Verificar clique no bunny vermelho
+    else if (isSphereClicked(glm::vec3(0.0f, 0.0f, 0.0f), 0.1f, mouseX, mouseY)) {
+      objectVisibility["redBunny"] = !objectVisibility["redBunny"];
+      clickedMessage = objectVisibility["redBunny"] ? "Você clicou no bunny vermelho!" : "";
+    }
   }
   
-  if (showBottomPanel) {
-    // Create a bottom panel occupying 20% of the window height
+  if (!clickedMessage.empty()) {
+    // Criar um painel na parte inferior ocupando 20% da altura da janela
     ImGui::SetNextWindowSize(ImVec2(m_viewportSize.x, m_viewportSize.y * 0.2f));
     ImGui::SetNextWindowPos(ImVec2(0, m_viewportSize.y * 0.8f));
 
     ImGui::Begin("Bottom Panel", nullptr, ImGuiWindowFlags_NoTitleBar);
-    ImGui::Text("Hello World");
+    ImGui::Text("%s", clickedMessage.c_str());
     ImGui::End();
   }
 }
@@ -259,74 +282,38 @@ void Window::onPaintUI() {
 
 
 
-bool Window::rayBoxIntersection(glm::vec3 const &rayWorld,
-                                glm::vec3 const &boxMin, glm::vec3 const &boxMax) {
-  // Origem do raio é a posição da câmera
-  glm::vec3 rayOrigin = m_camera.m_eye;
-  
-  // Direção do raio já está normalizada (assumida como `rayWorld`)
-  glm::vec3 rayDir = glm::normalize(rayWorld - rayOrigin);
 
-  float tMin = (boxMin.x - rayOrigin.x) / rayDir.x;
-  float tMax = (boxMax.x - rayOrigin.x) / rayDir.x;
 
-  if (tMin > tMax) std::swap(tMin, tMax);
 
-  float tyMin = (boxMin.y - rayOrigin.y) / rayDir.y;
-  float tyMax = (boxMax.y - rayOrigin.y) / rayDir.y;
 
-  if (tyMin > tyMax) std::swap(tyMin, tyMax);
+bool Window::isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX, float mouseY) {
+  // Normalizar coordenadas do mouse (entre -1 e 1)
+  float normalizedX = (2.0f * mouseX) / m_viewportSize.x - 1.0f;
+  float normalizedY = 1.0f - (2.0f * mouseY) / m_viewportSize.y;
 
-  if ((tMin > tyMax) || (tyMin > tMax)) return false;
+  // Construir a direção do raio no espaço da câmera
+  glm::vec4 rayClip = glm::vec4(normalizedX, normalizedY, -1.0f, 1.0f);
+  glm::vec4 rayEye = glm::inverse(m_camera.getProjMatrix()) * rayClip;
+  rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Definir direção
 
-  if (tyMin > tMin) tMin = tyMin;
-  if (tyMax < tMax) tMax = tyMax;
+  // Direção do raio no espaço do mundo
+  glm::vec3 rayWorld = glm::vec3(glm::inverse(m_camera.getViewMatrix()) * rayEye);
+  rayWorld = glm::normalize(rayWorld);
 
-  float tzMin = (boxMin.z - rayOrigin.z) / rayDir.z;
-  float tzMax = (boxMax.z - rayOrigin.z) / rayDir.z;
+  // Origem do raio no espaço do mundo
+  glm::vec3 rayOrigin = glm::vec3(glm::inverse(m_camera.getViewMatrix())[3]);
 
-  if (tzMin > tzMax) std::swap(tzMin, tzMax);
+  // Verificar se o raio intersecta a esfera
+  glm::vec3 oc = rayOrigin - sphereCenter;
+  float a = glm::dot(rayWorld, rayWorld);
+  float b = 2.0f * glm::dot(oc, rayWorld);
+  float c = glm::dot(oc, oc) - radius * radius;
+  float discriminant = b * b - 4 * a * c;
 
-  if ((tMin > tzMax) || (tzMin > tMax)) return false;
-
-  return true;
+  return (discriminant >= 0); // Clique está dentro da esfera se houver interseção
 }
 
 
-
-
-
-bool Window::rayIntersectsModel(glm::vec3 const &rayWorld,
-                                glm::mat4 const &modelMatrix) {
-  // Ray intersection logic (e.g., bounding box test or triangle intersection)
-  // Simplification: Check against an AABB around the bunny
-  glm::vec3 bunnyMin{-0.5f, -0.5f, -0.5f};
-  glm::vec3 bunnyMax{0.5f, 0.5f, 0.5f};
-
-  auto const modelMin{glm::vec3(modelMatrix * glm::vec4(bunnyMin, 1.0f))};
-  auto const modelMax{glm::vec3(modelMatrix * glm::vec4(bunnyMax, 1.0f))};
-
-  // Intersection logic (example using ray-box intersection test)
-  return rayBoxIntersection(rayWorld, modelMin, modelMax);
-}  
-
-
-bool Window::isBunnyClicked(float mouseX, float mouseY) {
-  // Convert screen space mouse coordinates to normalized device coordinates
-  auto const ndcX = (2.0f * mouseX) / m_viewportSize.x - 1.0f;
-  auto const ndcY = 1.0f - (2.0f * mouseY) / m_viewportSize.y;
-
-  // Create a ray in normalized device coordinates
-  glm::vec4 rayClip{ndcX, ndcY, -1.0f, 1.0f};
-  glm::vec4 rayEye{glm::inverse(m_camera.getProjMatrix()) * rayClip};
-  rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
-
-  // Transform ray to world space
-  glm::vec3 rayWorld{glm::normalize(glm::vec3(glm::inverse(m_camera.getViewMatrix()) * rayEye))};
-
-  // Perform ray-object intersection test with white bunny
-  return rayIntersectsModel(rayWorld, m_whiteBunnyModel);
-}
 
 
 void Window::onResize(glm::ivec2 const &size) {

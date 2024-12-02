@@ -46,9 +46,10 @@ private:
   
   
   
-  bool rayIntersectsModel(glm::vec3 const &ray, glm::mat4 const &modelMatrix);
-  bool rayBoxIntersection(glm::vec3 const &rayWorld,
-                        glm::vec3 const &boxMin, glm::vec3 const &boxMax);
+  bool isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX, float mouseY); 
+  //bool rayIntersectsModel(glm::vec3 const &ray, glm::mat4 const &modelMatrix);
+  //bool rayBoxIntersection(glm::vec3 const &rayWorld,
+  //                      glm::vec3 const &boxMin, glm::vec3 const &boxMax);
   //Ground m_ground;
 
   std::vector<Vertex> m_vertices;
