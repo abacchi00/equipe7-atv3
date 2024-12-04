@@ -36,9 +36,19 @@ private:
   GLint m_colorLocation{};
 
   Camera m_camera;
-  float m_dollySpeed{};
-  float m_truckSpeed{};
-  float m_panSpeed{};
+
+  std::unordered_map<SDL_Keycode, bool> m_keyState;
+
+  float m_dollySpeed = 0.0f;
+  float m_panSpeed = 0.0f;
+  float m_truckSpeed = 0.0f;
+
+  float m_dollyAcceleration = 0.05f;  // Acceleration factor for dolly
+  float m_panAcceleration = 0.025f;    // Acceleration factor for pan
+  float m_truckAcceleration = 0.05f;  // Acceleration factor for truck
+  float m_dollyMaxSpeed = 1.5f;      // Maximum speed for dolly
+  float m_panMaxSpeed = 1.0f;        // Maximum speed for pan
+  float m_truckMaxSpeed = 1.0f;      // Maximum speed for truck
 
   bool isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX, float mouseY);
 
