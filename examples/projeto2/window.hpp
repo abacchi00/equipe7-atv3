@@ -4,7 +4,6 @@
 #include "abcgOpenGL.hpp"
 
 #include "camera.hpp"
-//#include "ground.hpp"
 
 struct Vertex {
   glm::vec3 position;
@@ -21,9 +20,6 @@ protected:
   void onResize(glm::ivec2 const &size) override;
   void onDestroy() override;
   void onUpdate() override;
-  
-  bool isBunnyClicked(float mouseX, float mouseY);
-
 
 private:
   glm::ivec2 m_viewportSize{};
@@ -43,14 +39,8 @@ private:
   float m_dollySpeed{};
   float m_truckSpeed{};
   float m_panSpeed{};
-  
-  
-  
-  bool isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX, float mouseY); 
-  //bool rayIntersectsModel(glm::vec3 const &ray, glm::mat4 const &modelMatrix);
-  //bool rayBoxIntersection(glm::vec3 const &rayWorld,
-  //                      glm::vec3 const &boxMin, glm::vec3 const &boxMax);
-  //Ground m_ground;
+
+  bool isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX, float mouseY);
 
   std::vector<Vertex> m_vertices;
   std::vector<GLuint> m_indices;

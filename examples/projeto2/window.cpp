@@ -61,8 +61,6 @@ void Window::onCreate() {
                                  {.source = assetsPath + "lookat.frag",
                                   .stage = abcg::ShaderStage::Fragment}});
 
-  //m_ground.create(m_program);
-
   // Get location of uniform variables
   m_viewMatrixLocation = abcg::glGetUniformLocation(m_program, "viewMatrix");
   m_projMatrixLocation = abcg::glGetUniformLocation(m_program, "projMatrix");
@@ -190,8 +188,8 @@ void Window::onPaint() {
 
   // Store the bunny's model matrix for raycasting
   m_whiteBunnyModel = model;
-  
-  
+
+
   // Draw yellow bunny
   model = glm::mat4(1.0);
   model = glm::translate(model, glm::vec3(-0.75f, 0.6f, -0.0f));
@@ -238,18 +236,14 @@ void Window::onPaint() {
 
   abcg::glBindVertexArray(0);
 
-
-  // Draw ground
-  //m_ground.paint();
-
   abcg::glUseProgram(0);
 }
 
 
 
-void Window::onPaintUI() { 
-  abcg::OpenGLWindow::onPaintUI(); 
-  
+void Window::onPaintUI() {
+  abcg::OpenGLWindow::onPaintUI();
+
   static std::unordered_map<std::string, bool> objectVisibility{
       {"whiteBunny", false},
       {"yellowBunny", false},
@@ -286,7 +280,7 @@ void Window::onPaintUI() {
       clickedMessage = objectVisibility["redBunny"] ? "Red!" : "";
     }
   }
-  
+
   if (!clickedMessage.empty()) {
     // Criar um painel na parte inferior ocupando 20% da altura da janela
     ImGui::SetNextWindowSize(ImVec2(m_viewportSize.x, m_viewportSize.y * 0.2f));
@@ -297,13 +291,6 @@ void Window::onPaintUI() {
     ImGui::End();
   }
 }
-
-
-
-
-
-
-
 
 bool Window::isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX, float mouseY) {
   // Normalizar coordenadas do mouse (entre -1 e 1)
@@ -332,17 +319,12 @@ bool Window::isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX,
   return (discriminant >= 0); // Clique está dentro da esfera se houver interseção
 }
 
-
-
-
 void Window::onResize(glm::ivec2 const &size) {
   m_viewportSize = size;
   m_camera.computeProjectionMatrix(size);
 }
 
 void Window::onDestroy() {
-  //m_ground.destroy();
-
   abcg::glDeleteProgram(m_program);
   abcg::glDeleteBuffers(1, &m_EBO);
   abcg::glDeleteBuffers(1, &m_VBO);
