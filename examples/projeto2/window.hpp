@@ -21,6 +21,8 @@ protected:
   void onDestroy() override;
   void onUpdate() override;
 
+  bool isBunnyClicked(float mouseX, float mouseY);
+
 private:
   glm::ivec2 m_viewportSize{};
   glm::mat4 m_whiteBunnyModel{1.0f}; // Matriz de transformação do coelho branco
@@ -50,8 +52,9 @@ private:
   float m_panMaxSpeed = 1.0f;        // Maximum speed for pan
   float m_truckMaxSpeed = 1.0f;      // Maximum speed for truck
 
+  glm::vec4 m_bunnyColor{0.0f, 0.0f, 0.0f, 0.0f}; 
   bool isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX, float mouseY);
-
+  
   std::vector<Vertex> m_vertices;
   std::vector<GLuint> m_indices;
 

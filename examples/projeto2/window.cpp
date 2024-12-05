@@ -26,7 +26,7 @@ void Window::onCreate() {
   abcg::glClearColor(0, 0, 0, 1);
 
   // Enable depth buffering
-  abcg::glEnable(GL_DEPTH_TEST);
+  // abcg::glEnable(GL_DEPTH_TEST);
 
   // Create program
   m_program =
@@ -151,9 +151,9 @@ void Window::onPaint() {
 
   // Draw white bunny
   glm::mat4 model{1.0f};
-  model = glm::translate(model, glm::vec3(-1.25f, 0.0f, 0.0f));
+ model = glm::translate(model, glm::vec3(-1.25f, 0.0f, 0.0f));
   model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 1, 0));
-  model = glm::scale(model, glm::vec3(0.5f));
+  model = glm::scale(model, glm::vec3(0.3f));
 
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(m_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -167,7 +167,7 @@ void Window::onPaint() {
   // Draw yellow bunny
   model = glm::mat4(1.0);
   model = glm::translate(model, glm::vec3(-0.75f, 0.6f, -0.0f));
-  model = glm::scale(model, glm::vec3(0.5f));
+  model = glm::scale(model, glm::vec3(0.3f));
 
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(m_colorLocation, 1.0f, 0.8f, 0.0f, 1.0f);
@@ -178,7 +178,7 @@ void Window::onPaint() {
   // Draw green bunny
   model = glm::mat4(1.0);
   model = glm::translate(model, glm::vec3(0.0f, 1.0f, -0.0f));
-  model = glm::scale(model, glm::vec3(0.5f));
+  model = glm::scale(model, glm::vec3(0.3f));
 
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(m_colorLocation, 0.0f, 0.8f, 0.0f, 1.0f);
@@ -190,7 +190,7 @@ void Window::onPaint() {
   model = glm::mat4(1.0);
   model = glm::translate(model, glm::vec3(0.75f, 0.6f, 0.0f));
   model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-  model = glm::scale(model, glm::vec3(0.5f));
+  model = glm::scale(model, glm::vec3(0.3f));
 
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(m_colorLocation, 0.0f, 0.8f, 1.0f, 1.0f);
@@ -201,12 +201,26 @@ void Window::onPaint() {
   // Draw red bunny
   model = glm::mat4(1.0);
   model = glm::translate(model, glm::vec3(1.25f, 0.0f, 0.0f));
-  model = glm::scale(model, glm::vec3(0.5f));
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  model = glm::scale(model, glm::vec3(0.3f));
 
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(m_colorLocation, 1.0f, 0.25f, 0.25f, 1.0f);
   abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
                        nullptr);
+
+// hidden lego
+
+  // Draw hidden bunny
+  model = glm::mat4(1.0);
+  model = glm::translate(model, glm::vec3(-0.7f, 1.5f, -0.5f));
+  model = glm::scale(model, glm::vec3(0.3f));
+
+  abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+  abcg::glUniform4f(m_colorLocation, m_bunnyColor.r, m_bunnyColor.g, m_bunnyColor.b, m_bunnyColor.a);
+  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+                       nullptr);
+
 
   abcg::glBindVertexArray(0);
 
@@ -228,28 +242,36 @@ void Window::onPaintUI() {
     auto const [mouseX, mouseY] = ImGui::GetMousePos();
 
     // Verificar clique no bunny branco
-    if (isSphereClicked(glm::vec3(-1.5f, 0.0f, 0.0f), 0.5f, mouseX, mouseY)) {
+    if (isSphereClicked(glm::vec3(-1.5f, 0.0f, 0.0f), 0.3f, mouseX, mouseY)) {
       objectVisibility["whiteBunny"] = !objectVisibility["whiteBunny"];
       clickedMessage = objectVisibility["whiteBunny"] ? "White!" : "";
     }
-    else if (isSphereClicked(glm::vec3(-0.75f, 0.6f, -0.0f), 0.5f, mouseX, mouseY)) {
+    else if (isSphereClicked(glm::vec3(-0.75f, 0.6f, -0.0f), 0.3f, mouseX, mouseY)) {
       objectVisibility["yellowBunny"] = !objectVisibility["yellowBunny"];
       clickedMessage = objectVisibility["yellowBunny"] ? "Yellow!" : "";
     }
     // Verificar clique no bunny amarelo
-    else if (isSphereClicked(glm::vec3(0.0f, 1.0f, -0.0f), 0.5f, mouseX, mouseY)) {
+    else if (isSphereClicked(glm::vec3(0.0f, 1.0f, -0.0f), 0.3f, mouseX, mouseY)) {
       objectVisibility["yellowBunny"] = !objectVisibility["yellowBunny"];
       clickedMessage = objectVisibility["yellowBunny"] ? "Green!" : "";
     }
     // Verificar clique no bunny azul
-    else if (isSphereClicked(glm::vec3(0.75f, 0.6f, 0.0f), 0.5f, mouseX, mouseY)) {
+    else if (isSphereClicked(glm::vec3(0.75f, 0.6f, 0.0f), 0.3f, mouseX, mouseY)) {
       objectVisibility["blueBunny"] = !objectVisibility["blueBunny"];
       clickedMessage = objectVisibility["blueBunny"] ? "Blue!" : "";
     }
     // Verificar clique no bunny vermelho
-    else if (isSphereClicked(glm::vec3(1.5f, 0.0f, 0.0f), 0.5f, mouseX, mouseY)) {
+    else if (isSphereClicked(glm::vec3(1.5f, 0.0f, 0.0f), 0.3f, mouseX, mouseY)) {
       objectVisibility["redBunny"] = !objectVisibility["redBunny"];
       clickedMessage = objectVisibility["redBunny"] ? "Red!" : "";
+    }
+
+     else if (isSphereClicked(glm::vec3(-0.7f, 1.5f, -0.5f), 0.4f, mouseX, mouseY)) {
+
+    m_bunnyColor = glm::vec4(0.882f, 0.584f, 0.671f, 1.0f);
+
+      objectVisibility["hiddenBunny"] = !objectVisibility["hiddenBunny"];
+      clickedMessage = objectVisibility["hiddenBunny"] ? "You found me!" : "";
     }
   }
 
