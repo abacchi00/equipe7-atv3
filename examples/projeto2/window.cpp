@@ -12,37 +12,11 @@ template <> struct std::hash<Vertex> {
 
 void Window::onEvent(SDL_Event const &event) {
   if (event.type == SDL_KEYDOWN) {
-    if (event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_w)
-      m_dollySpeed = 1.0f;
-    if (event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_s)
-      m_dollySpeed = -1.0f;
-    if (event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a)
-      m_panSpeed = -1.0f;
-    if (event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d)
-      m_panSpeed = 1.0f;
-    if (event.key.keysym.sym == SDLK_q)
-      m_truckSpeed = -1.0f;
-    if (event.key.keysym.sym == SDLK_e)
-      m_truckSpeed = 1.0f;
+    m_keyState[event.key.keysym.sym] = true; // Mark the key as pressed
   }
+
   if (event.type == SDL_KEYUP) {
-    if ((event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_w) &&
-        m_dollySpeed > 0)
-      m_dollySpeed = 0.0f;
-    if ((event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_s) &&
-        m_dollySpeed < 0)
-      m_dollySpeed = 0.0f;
-    if ((event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_a) &&
-        m_panSpeed < 0)
-      m_panSpeed = 0.0f;
-    if ((event.key.keysym.sym == SDLK_RIGHT ||
-         event.key.keysym.sym == SDLK_d) &&
-        m_panSpeed > 0)
-      m_panSpeed = 0.0f;
-    if (event.key.keysym.sym == SDLK_q && m_truckSpeed < 0)
-      m_truckSpeed = 0.0f;
-    if (event.key.keysym.sym == SDLK_e && m_truckSpeed > 0)
-      m_truckSpeed = 0.0f;
+    m_keyState[event.key.keysym.sym] = false; // Mark the key as released
   }
 }
 
@@ -60,8 +34,6 @@ void Window::onCreate() {
                                   .stage = abcg::ShaderStage::Vertex},
                                  {.source = assetsPath + "lookat.frag",
                                   .stage = abcg::ShaderStage::Fragment}});
-
-  //m_ground.create(m_program);
 
   // Get location of uniform variables
   m_viewMatrixLocation = abcg::glGetUniformLocation(m_program, "viewMatrix");
@@ -190,8 +162,8 @@ void Window::onPaint() {
 
   // Store the bunny's model matrix for raycasting
   m_whiteBunnyModel = model;
-  
-  
+
+
   // Draw yellow bunny
   model = glm::mat4(1.0);
   model = glm::translate(model, glm::vec3(-0.75f, 0.6f, -0.0f));
@@ -238,18 +210,12 @@ void Window::onPaint() {
 
   abcg::glBindVertexArray(0);
 
-
-  // Draw ground
-  //m_ground.paint();
-
   abcg::glUseProgram(0);
 }
 
+void Window::onPaintUI() {
+  abcg::OpenGLWindow::onPaintUI();
 
-
-void Window::onPaintUI() { 
-  abcg::OpenGLWindow::onPaintUI(); 
-  
   static std::unordered_map<std::string, bool> objectVisibility{
       {"whiteBunny", false},
       {"yellowBunny", false},
@@ -286,7 +252,7 @@ void Window::onPaintUI() {
       clickedMessage = objectVisibility["redBunny"] ? "Red!" : "";
     }
   }
-  
+
   if (!clickedMessage.empty()) {
     // Criar um painel na parte inferior ocupando 20% da altura da janela
     ImGui::SetNextWindowSize(ImVec2(m_viewportSize.x, m_viewportSize.y * 0.2f));
@@ -296,14 +262,25 @@ void Window::onPaintUI() {
     ImGui::Text("%s", clickedMessage.c_str());
     ImGui::End();
   }
+
+  // Add a section to show the current speeds and accelerations at the bottom of the screen
+  ImGui::SetNextWindowPos(ImVec2(180, 0));
+  ImGui::SetNextWindowSize(ImVec2(300, 135));
+
+  ImGui::Begin("Speed & Acceleration", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
+
+  // Display current speeds and accelerations for dolly, pan, and truck
+  ImGui::Text("Dolly Speed: %.3f", m_dollySpeed);
+  ImGui::Text("Dolly Acceleration: %.3f", m_dollyAcceleration);
+
+  ImGui::Text("Pan Speed: %.3f", m_panSpeed);
+  ImGui::Text("Pan Acceleration: %.3f", m_panAcceleration);
+
+  ImGui::Text("Truck Speed: %.3f", m_truckSpeed);
+  ImGui::Text("Truck Acceleration: %.3f", m_truckAcceleration);
+
+  ImGui::End();
 }
-
-
-
-
-
-
-
 
 bool Window::isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX, float mouseY) {
   // Normalizar coordenadas do mouse (entre -1 e 1)
@@ -332,17 +309,12 @@ bool Window::isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX,
   return (discriminant >= 0); // Clique está dentro da esfera se houver interseção
 }
 
-
-
-
 void Window::onResize(glm::ivec2 const &size) {
   m_viewportSize = size;
   m_camera.computeProjectionMatrix(size);
 }
 
 void Window::onDestroy() {
-  //m_ground.destroy();
-
   abcg::glDeleteProgram(m_program);
   abcg::glDeleteBuffers(1, &m_EBO);
   abcg::glDeleteBuffers(1, &m_VBO);
@@ -352,8 +324,53 @@ void Window::onDestroy() {
 void Window::onUpdate() {
   auto const deltaTime{gsl::narrow_cast<float>(getDeltaTime())};
 
-  // Update LookAt camera
+  // Apply acceleration logic for each type of movement based on key states
+  if (m_keyState[SDLK_w] || m_keyState[SDLK_UP]) {
+    m_dollySpeed = std::min(m_dollySpeed + m_dollyAcceleration, m_dollyMaxSpeed); // Increase speed
+  }
+  if (m_keyState[SDLK_s] || m_keyState[SDLK_DOWN]) {
+    m_dollySpeed = std::max(m_dollySpeed - m_dollyAcceleration, -m_dollyMaxSpeed); // Decrease speed
+  }
+  if (m_keyState[SDLK_d] || m_keyState[SDLK_RIGHT]) {
+    m_panSpeed = std::min(m_panSpeed + m_panAcceleration, m_panMaxSpeed); // Increase speed
+  }
+  if (m_keyState[SDLK_a] || m_keyState[SDLK_LEFT]) {
+    m_panSpeed = std::max(m_panSpeed - m_panAcceleration, -m_panMaxSpeed); // Decrease speed
+  }
+  if (m_keyState[SDLK_q]) {
+    m_truckSpeed = std::min(m_truckSpeed + m_truckAcceleration, m_truckMaxSpeed); // Increase speed
+  }
+  if (m_keyState[SDLK_e]) {
+    m_truckSpeed = std::max(m_truckSpeed - m_truckAcceleration, -m_truckMaxSpeed); // Decrease speed
+  }
+
+  // Apply movement with acceleration/deceleration
   m_camera.dolly(m_dollySpeed * deltaTime);
   m_camera.truck(m_truckSpeed * deltaTime);
   m_camera.pan(m_panSpeed * deltaTime);
+
+  // Deceleration logic when no keys are pressed
+  if (m_dollySpeed != 0.0f) {
+    if (m_dollySpeed > 0.0f) {
+      m_dollySpeed = glm::max(m_dollySpeed - 0.005f, 0.0f);  // Deceleration for dolly
+    } else {
+      m_dollySpeed = glm::min(m_dollySpeed + 0.005f, 0.0f);  // Deceleration for dolly (negative direction)
+    }
+  }
+
+  if (m_panSpeed != 0.0f) {
+    if (m_panSpeed > 0.0f) {
+      m_panSpeed = glm::max(m_panSpeed - 0.005f, 0.0f);  // Deceleration for pan
+    } else {
+      m_panSpeed = glm::min(m_panSpeed + 0.005f, 0.0f);  // Deceleration for pan (negative direction)
+    }
+  }
+
+  if (m_truckSpeed != 0.0f) {
+    if (m_truckSpeed > 0.0f) {
+      m_truckSpeed = glm::max(m_truckSpeed - 0.005f, 0.0f);  // Deceleration for truck
+    } else {
+      m_truckSpeed = glm::min(m_truckSpeed + 0.005f, 0.0f);  // Deceleration for truck (negative direction)
+    }
+  }
 }

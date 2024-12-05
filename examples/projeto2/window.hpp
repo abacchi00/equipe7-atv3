@@ -4,7 +4,6 @@
 #include "abcgOpenGL.hpp"
 
 #include "camera.hpp"
-//#include "ground.hpp"
 
 struct Vertex {
   glm::vec3 position;
@@ -21,9 +20,6 @@ protected:
   void onResize(glm::ivec2 const &size) override;
   void onDestroy() override;
   void onUpdate() override;
-  
-  bool isBunnyClicked(float mouseX, float mouseY);
-
 
 private:
   glm::ivec2 m_viewportSize{};
@@ -40,17 +36,21 @@ private:
   GLint m_colorLocation{};
 
   Camera m_camera;
-  float m_dollySpeed{};
-  float m_truckSpeed{};
-  float m_panSpeed{};
-  
-  
-  
-  bool isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX, float mouseY); 
-  //bool rayIntersectsModel(glm::vec3 const &ray, glm::mat4 const &modelMatrix);
-  //bool rayBoxIntersection(glm::vec3 const &rayWorld,
-  //                      glm::vec3 const &boxMin, glm::vec3 const &boxMax);
-  //Ground m_ground;
+
+  std::unordered_map<SDL_Keycode, bool> m_keyState;
+
+  float m_dollySpeed = 0.0f;
+  float m_panSpeed = 0.0f;
+  float m_truckSpeed = 0.0f;
+
+  float m_dollyAcceleration = 0.05f;  // Acceleration factor for dolly
+  float m_panAcceleration = 0.025f;    // Acceleration factor for pan
+  float m_truckAcceleration = 0.05f;  // Acceleration factor for truck
+  float m_dollyMaxSpeed = 1.5f;      // Maximum speed for dolly
+  float m_panMaxSpeed = 1.0f;        // Maximum speed for pan
+  float m_truckMaxSpeed = 1.0f;      // Maximum speed for truck
+
+  bool isSphereClicked(glm::vec3 sphereCenter, float radius, float mouseX, float mouseY);
 
   std::vector<Vertex> m_vertices;
   std::vector<GLuint> m_indices;
