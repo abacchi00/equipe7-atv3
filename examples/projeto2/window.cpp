@@ -10,6 +10,8 @@ template <> struct std::hash<Vertex> {
   }
 };
 
+
+
 void Window::onEvent(SDL_Event const &event) {
   if (event.type == SDL_KEYDOWN) {
     m_keyState[event.key.keysym.sym] = true; // Mark the key as pressed
@@ -21,6 +23,7 @@ void Window::onEvent(SDL_Event const &event) {
 }
 
 void Window::onCreate() {
+  
   auto const &assetsPath{abcg::Application::getAssetsPath()};
 
   abcg::glClearColor(0, 0, 0, 1);
@@ -243,10 +246,16 @@ void Window::showCameraPositionUI() {
   ImGui::Text("Y: %.2f", cameraPosition.y);
   ImGui::Text("Z: %.2f", cameraPosition.z);
 
+    if (ImGui::Button("Reset")){
+        m_bunnyColor = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);  
+    }
+
   ImGui::End();
 };
 
 void Window::onPaintUI() {
+
+
   abcg::OpenGLWindow::onPaintUI();
 
   static std::unordered_map<std::string, bool> objectVisibility{
@@ -259,6 +268,9 @@ void Window::onPaintUI() {
   static std::string clickedMessage{""}; // Armazena a mensagem do objeto clicado
 
   showCameraPositionUI();
+
+
+    
 
   // Detectar cliques do mouse nos objetos bunny usando raycasting
   if (ImGui::IsMouseClicked(0)) { // Botão esquerdo do mouse
@@ -291,12 +303,17 @@ void Window::onPaintUI() {
 
      else if (isSphereClicked(glm::vec3(-0.7f, 1.5f, -0.5f), 0.4f, mouseX, mouseY)) {
 
-    m_bunnyColor = glm::vec4(0.882f, 0.584f, 0.671f, 1.0f);
+      m_bunnyColor = glm::vec4(0.882f, 0.584f, 0.671f, 1.0f);
 
       objectVisibility["hiddenBunny"] = !objectVisibility["hiddenBunny"];
       clickedMessage = objectVisibility["hiddenBunny"] ? "You found me! I was starting to think I would have to set up camp on this asteroid. Thanks for rescuing me from the space void!" : "";
     }
+
   }
+
+
+    
+
 
   if (!clickedMessage.empty()) {
     // Criar um painel na parte inferior ocupando 20% da altura da janela
@@ -323,6 +340,9 @@ void Window::onPaintUI() {
 
   ImGui::Text("Truck Speed: %.3f", m_truckSpeed);
   ImGui::Text("Truck Acceleration: %.3f", m_truckAcceleration);
+
+
+
 
   ImGui::End();
 }
