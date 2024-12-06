@@ -21,6 +21,7 @@ protected:
   void onDestroy() override;
   void onUpdate() override;
 
+  void showCameraPositionUI();
   bool isBunnyClicked(float mouseX, float mouseY);
 
 private:

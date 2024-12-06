@@ -227,6 +227,25 @@ void Window::onPaint() {
   abcg::glUseProgram(0);
 }
 
+void Window::showCameraPositionUI() {
+  // Obtém a matriz de visão invertida e calcula a posição da câmera
+  glm::mat4 viewMatrix = m_camera.getViewMatrix();
+  glm::vec3 cameraPosition = glm::vec3(viewMatrix[3][0], viewMatrix[3][1], viewMatrix[3][2]);
+
+  // Criar uma janela para mostrar as coordenadas XYZ da câmera
+  ImGui::SetNextWindowSize(ImVec2(105, 135)); // Define o tamanho da janela
+  ImGui::SetNextWindowPos(ImVec2(490, 5));  // Define a posição da janela
+
+  ImGui::Begin("Camera Coordinates", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
+
+  ImGui::Text("Camera Position:");
+  ImGui::Text("X: %.2f", cameraPosition.x);
+  ImGui::Text("Y: %.2f", cameraPosition.y);
+  ImGui::Text("Z: %.2f", cameraPosition.z);
+
+  ImGui::End();
+};
+
 void Window::onPaintUI() {
   abcg::OpenGLWindow::onPaintUI();
 
@@ -236,6 +255,8 @@ void Window::onPaintUI() {
       {"blueBunny", false},
       {"redBunny", false}};
   static std::string clickedMessage{""}; // Armazena a mensagem do objeto clicado
+
+  showCameraPositionUI();
 
   // Detectar cliques do mouse nos objetos bunny usando raycasting
   if (ImGui::IsMouseClicked(0)) { // Botão esquerdo do mouse
@@ -286,7 +307,7 @@ void Window::onPaintUI() {
   }
 
   // Add a section to show the current speeds and accelerations at the bottom of the screen
-  ImGui::SetNextWindowPos(ImVec2(180, 0));
+  ImGui::SetNextWindowPos(ImVec2(180, 5));
   ImGui::SetNextWindowSize(ImVec2(300, 135));
 
   ImGui::Begin("Speed & Acceleration", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
