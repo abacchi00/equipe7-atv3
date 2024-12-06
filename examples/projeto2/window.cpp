@@ -252,8 +252,10 @@ void Window::onPaintUI() {
   static std::unordered_map<std::string, bool> objectVisibility{
       {"whiteBunny", false},
       {"yellowBunny", false},
+      {"greenBunny", false},
       {"blueBunny", false},
-      {"redBunny", false}};
+      {"redBunny", false}, 
+      {"hiddenBunny", false},};
   static std::string clickedMessage{""}; // Armazena a mensagem do objeto clicado
 
   showCameraPositionUI();
@@ -265,26 +267,26 @@ void Window::onPaintUI() {
     // Verificar clique no bunny branco
     if (isSphereClicked(glm::vec3(-1.5f, 0.0f, 0.0f), 0.3f, mouseX, mouseY)) {
       objectVisibility["whiteBunny"] = !objectVisibility["whiteBunny"];
-      clickedMessage = objectVisibility["whiteBunny"] ? "White!" : "";
+      clickedMessage = objectVisibility["whiteBunny"] ? "Hmm, I cannot see them from here... Maybe my friend on the right, the red one, saw something. They might have spotted them while avoiding space rocks or chasing aliens! You should ask them!" : "";
     }
     else if (isSphereClicked(glm::vec3(-0.75f, 0.6f, -0.0f), 0.3f, mouseX, mouseY)) {
       objectVisibility["yellowBunny"] = !objectVisibility["yellowBunny"];
-      clickedMessage = objectVisibility["yellowBunny"] ? "Yellow!" : "";
+      clickedMessage = objectVisibility["yellowBunny"] ? "I have not seen anything yet, but maybe the green one up top has a better view. He could be busy catching a comet or chasing space dust, but maybe they saw something!" : "";
     }
     // Verificar clique no bunny amarelo
     else if (isSphereClicked(glm::vec3(0.0f, 1.0f, -0.0f), 0.3f, mouseX, mouseY)) {
-      objectVisibility["yellowBunny"] = !objectVisibility["yellowBunny"];
-      clickedMessage = objectVisibility["yellowBunny"] ? "Green!" : "";
+      objectVisibility["greenBunny"] = !objectVisibility["greenBunny"];
+      clickedMessage = objectVisibility["greenBunny"] ? "I think I saw something... or maybe it was just a star falling. Who knows in this big space! You might want to check around me and yellow. We are floating higher than a rocket—could be something hiding up here!" : "";
     }
     // Verificar clique no bunny azul
     else if (isSphereClicked(glm::vec3(0.75f, 0.6f, 0.0f), 0.3f, mouseX, mouseY)) {
       objectVisibility["blueBunny"] = !objectVisibility["blueBunny"];
-      clickedMessage = objectVisibility["blueBunny"] ? "Blue!" : "";
+      clickedMessage = objectVisibility["blueBunny"] ? "I am looking hard, but no luck! Maybe red can see better, or maybe they are just floating off into space like I am! Go ask them!" : "";
     }
     // Verificar clique no bunny vermelho
     else if (isSphereClicked(glm::vec3(1.5f, 0.0f, 0.0f), 0.3f, mouseX, mouseY)) {
       objectVisibility["redBunny"] = !objectVisibility["redBunny"];
-      clickedMessage = objectVisibility["redBunny"] ? "Red!" : "";
+      clickedMessage = objectVisibility["redBunny"] ? "I cannot see them either! It’s like looking for a tiny spaceship in all this space! Maybe blue can see something, or maybe they’re lost in space! Who knows?" : "";
     }
 
      else if (isSphereClicked(glm::vec3(-0.7f, 1.5f, -0.5f), 0.4f, mouseX, mouseY)) {
@@ -292,7 +294,7 @@ void Window::onPaintUI() {
     m_bunnyColor = glm::vec4(0.882f, 0.584f, 0.671f, 1.0f);
 
       objectVisibility["hiddenBunny"] = !objectVisibility["hiddenBunny"];
-      clickedMessage = objectVisibility["hiddenBunny"] ? "You found me!" : "";
+      clickedMessage = objectVisibility["hiddenBunny"] ? "You found me! I was starting to think I would have to set up camp on this asteroid. Thanks for rescuing me from the space void!" : "";
     }
   }
 
