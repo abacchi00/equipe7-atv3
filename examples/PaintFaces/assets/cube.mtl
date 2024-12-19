@@ -1,0 +1,9 @@
+# Cube.mtl
+newmtl Neutral
+Ns 225.000000
+Ka 1.0 1.0 1.0  # Branco ambiente
+Kd 1.0 1.0 1.0  # Branco difuso
+Ks 1.0 1.0 1.0  # Branco especular
+Ns 100.0        # Intensidade do brilho
+d 1.0           # Transparência (1.0 = opaco)
+illum 2         # Modelo de iluminação
