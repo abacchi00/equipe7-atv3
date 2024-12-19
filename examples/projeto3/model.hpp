@@ -31,8 +31,6 @@ private:
   GLuint m_VBO{};
   GLuint m_EBO{};
 
-
-
   void createBuffers();
   void standardize();
 };

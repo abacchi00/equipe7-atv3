@@ -1,6 +1,5 @@
 #include "window.hpp"
 
-
 void Window::onEvent(SDL_Event const &event) {
   glm::ivec2 mousePosition;
   SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
@@ -22,20 +21,12 @@ void Window::onEvent(SDL_Event const &event) {
   }
 
   if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
-    // Obtenha a face clicada (exemplo de verificação simplificada)
-    // auto clickedFace = getClickedFace(event.button.x, event.button.y);
-    // if (clickedFace.has_value()) {
-    //   m_model.updateFaceColor(clickedFace.value(), selectedColor);
-    // }
-
       auto closestFace = getClosestFace();
         if (closestFace.has_value()) {
           m_model.updateFaceColor(closestFace.value(), selectedColor);
   }
 }
 }
-
-
 
 std::optional<int> Window::getClosestFace() {
   // Posição da câmera no espaço do mundo (pode ser ajustada conforme necessário)
@@ -67,128 +58,6 @@ std::optional<int> Window::getClosestFace() {
 
   return closestFaceIndex;
 }
-
-// std::optional<int> Window::getClickedFace(int mouseX, int mouseY) {
-
-//    // Verifique a interseção com as faces do cubo
-//   for (std::size_t i = 0; i < m_model.m_vertices.size(); ++i) {
-//     const auto &face = m_model.m_vertices[i];
-
-//       //if (intersectsFace(parametros aqui)) {
-//       if (true) {
-//         return i;  // Retorna o índice da face clicada
-//       }
-//   }
-
-//     return std::nullopt; // Nenhuma face clicada
-// }
-
-  // // Converta mouseX e mouseY para coordenadas normalizadas da tela
-  // float normalizedX = (2.0f * mouseX) / m_viewportSize.x - 1.0f;
-  // float normalizedY = 1.0f - (2.0f * mouseY) / m_viewportSize.y;
-
-  // // Construa o raio no espaço do mundo
-  // glm::vec4 rayClip(normalizedX, normalizedY, -1.0f, 1.0f);
-  // glm::vec4 rayEye = glm::inverse(m_projMatrix) * rayClip;
-  // rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
-
-  // glm::vec3 rayWorld = glm::normalize(glm::vec3(glm::inverse(m_viewMatrix) * rayEye));
-
-  // // Origem do raio (câmera)
-  // glm::vec3 rayOrigin = glm::vec3(glm::inverse(m_viewMatrix) * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-
-  // for (int faceIndex = 0; faceIndex < 6; ++faceIndex) {
-  //   // Cada face tem 6 índices (2 triângulos)
-  //   int startIndex = faceIndex * 6;
-  //   auto &v0 = m_model.m_vertices[m_model.m_indices[startIndex + 0]].position;
-  //   auto &v1 = m_model.m_vertices[m_model.m_indices[startIndex + 1]].position;
-  //   auto &v2 = m_model.m_vertices[m_model.m_indices[startIndex + 2]].position;
-
-  //   // Testa interseção com o primeiro triângulo
-  //   if (intersectsFace(rayOrigin, rayWorld, v0, v1, v2)) {
-  //     return faceIndex;
-  //   }
-
-  //   auto &v3 = m_model.m_vertices[m_model.m_indices[startIndex + 3]].position;
-
-  //   // Testa interseção com o segundo triângulo
-  //   if (intersectsFace(rayOrigin, rayWorld, v0, v2, v3)) {
-  //     return faceIndex;
-  //   }
-  // }
-
-  // return std::nullopt; // Nenhuma face clicada
-  // // Verifique a interseção com as faces do cubo
-  // for (std::size_t i = 0; i < m_model.m_vertices.size(); ++i) {
-  //   const auto &face = m_model.m_vertices[i];
-
-  //     //if (intersectsFace(parametros aqui)) {
-  //     if (true) {
-  //       return i;  // Retorna o índice da face clicada
-  //     }
-  // }
-
-  //   return std::nullopt; // Nenhuma face clicada
-
-//}
-
-// std::vector<int> Window::findClosestVertices(glm::vec2 mousePos, const std::vector<glm::vec3>& vertices, const glm::mat4& viewProjMatrix) {
-//     std::vector<std::pair<float, int>> distances;
-
-//     for (int i = 0; i < vertices.size(); ++i) {
-//         // Projeta o vértice no espaço da tela
-//         glm::vec4 clipSpace = viewProjMatrix * glm::vec4(vertices[i], 1.0);
-//         glm::vec3 ndc = glm::vec3(clipSpace) / clipSpace.w; // Normaliza para espaço NDC
-//         glm::vec2 screenPos = (ndc.xy * 0.5f + 0.5f) * glm::vec2(windowWidth, windowHeight); // Converte para espaço de tela
-
-//         // Calcula a distância ao ponto do mouse
-//         float distance = glm::length(screenPos - mousePos);
-//         distances.emplace_back(distance, i);
-//     }
-
-//     // Ordena os vértices pela distância
-//     std::sort(distances.begin(), distances.end());
-
-//     // Retorna os índices dos quatro vértices mais próximos
-//     std::vector<int> closestIndices;
-//     for (int i = 0; i < 4; ++i) {
-//         closestIndices.push_back(distances[i].second);
-//     }
-
-//     return closestIndices;
-// }
-
-
-// bool Window::intersectsFace(glm::vec3 rayOrigin, glm::vec3 rayDir,
-//                             glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) {
-//   // Teste de interseção raio-triângulo usando o método Möller-Trumbore
-//   const float EPSILON = 0.0000001f;
-//   glm::vec3 edge1 = v1 - v0;
-//   glm::vec3 edge2 = v2 - v0;
-//   glm::vec3 h = glm::cross(rayDir, edge2);
-//   float a = glm::dot(edge1, h);
-//   if (a > -EPSILON && a < EPSILON)
-//     return false; // O raio é paralelo ao triângulo
-
-//   float f = 1.0f / a;
-//   glm::vec3 s = rayOrigin - v0;
-//   float u = f * glm::dot(s, h);
-//   if (u < 0.0f || u > 1.0f)
-//     return false;
-
-//   glm::vec3 q = glm::cross(s, edge1);
-//   float v = f * glm::dot(rayDir, q);
-//   if (v < 0.0f || u + v > 1.0f)
-//     return false;
-
-//   // Verifica se o ponto de interseção está na direção positiva do raio
-//   float t = f * glm::dot(edge2, q);
-//   return t > EPSILON;
-// }
-
-
-
-
 
 std::array<glm::vec3, 4> colors{
     glm::vec3{1.0f, 0.0f, 0.0f},  // Vermelho
@@ -312,7 +181,6 @@ void Window::onPaintUI() {
         abcg::glFrontFace(GL_CW);
       }
     }
-    
 
     // Projection combo box
     {
