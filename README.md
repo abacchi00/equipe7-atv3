@@ -85,9 +85,9 @@ Aspectos computacionais: A aplicação atingiu um desempenho satisfatório, com 
 
 Resultados visuais: A aplicação de texturas e iluminação proporcionou uma experiência gráfica rica e interativa.
 
-Embora o grupo tenha enfrentado diversas dificuldades técnicas em cada um dos projetos, conseguimos superar os obstáculos com o auxílio de projetos anteriores e com um trabalho colaborativo. A principal lição foi que a perseverança e a busca constante por soluções, mesmo em situações desafiadoras, são fundamentais para o aprendizado.
+Embora o grupo tenha enfrentado diversas dificuldades técnicas em cada um dos projetos, conseguimos superar os obstáculos por meio de uma abordagem colaborativa e focada. A maior lição foi perceber que, em situações desafiadoras, a perseverança e a troca de conhecimento entre os membros da equipe são fundamentais para o aprendizado. A disciplina nos proporcionou exemplos práticos e didáticos que, mesmo com complexidade, serviram de base para entendermos os conceitos fundamentais de gráficos 2D e 3D, manipulação de objetos tridimensionais e iluminação.
 
-Estamos cientes de que, em alguns momentos, nossa dependência de projetos externos foi maior do que gostaríamos, mas isso nos permitiu aprender de forma prática e aplicável. A experiência adquirida nos motivou a continuar explorando e aprimorando nossas habilidades, e sentimos que evoluímos consideravelmente ao longo de todo o processo.
+Embora tenhamos nos deparado com conceitos novos e avançados, como a texturização e a iluminação em 3D, conseguimos aplicar os conhecimentos adquiridos ao longo da disciplina para concluir os projetos. A experiência foi valiosa, pois nos permitiu aprofundar e consolidar nossos conhecimentos em computação gráfica, além de nos motivar a continuar explorando e aprimorando nossas habilidades para futuros desafios.
 
 ## Conclusões
 
