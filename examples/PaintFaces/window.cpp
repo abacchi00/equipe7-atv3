@@ -528,8 +528,8 @@ static std::size_t textureIndex = 0;
     // Object Box
     {
       static std::size_t currentIndex{};
-      std::vector<std::string> comboItems{"Cube", "DeadTree",
-                                          "BaseSniper"};
+      std::vector<std::string> comboItems{"Cube", "Cube",
+                                          "Cube"};
       ImGui::PushItemWidth(120);
      if (ImGui::BeginCombo("Object", 
                           comboItems.at(currentIndex).c_str())) {
@@ -542,10 +542,10 @@ static std::size_t textureIndex = 0;
             if (index == 0 ) {
                 objetoSelecionado = "cube.obj";
             } else if (index == 1){
-                objetoSelecionado = "DeadTree.obj";
+                objetoSelecionado = "cube.obj";
             }
             else  {
-                objetoSelecionado = "Sniper_Stand.obj";
+                objetoSelecionado = "cube.obj";
             }
         }
       }
