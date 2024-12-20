@@ -1,5 +1,5 @@
 
-# Projeto 3 - Computação Gráfica
+# (7) PaintFaces (19.12.2024)
 
   
 
