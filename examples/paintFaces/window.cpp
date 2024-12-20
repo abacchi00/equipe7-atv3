@@ -2,6 +2,10 @@
 #include <iostream>
 #include "imfilebrowser.h"
 
+// Adicionando controle de dificuldade
+enum class DifficultyLevel { Easy = 0, Medium, Hard };
+
+DifficultyLevel currentDifficulty = DifficultyLevel::Easy;
 
 std::string objetoSelecionado = "cube.obj";
 
@@ -216,7 +220,7 @@ void Window::onPaintUI() {
 
 
   {
-    auto widgetSize{ImVec2(222, 250)};
+    auto widgetSize{ImVec2(222, 280)};
 
     if (!m_model.isUVMapped()) {
 
@@ -378,38 +382,125 @@ void Window::onPaintUI() {
     }
 
 
-    // Textura
-    {
-      static std::size_t currentIndex{};
-      std::vector<std::string> comboItems{"brick", "pattern",
-                                          "roman"};
+    // // Textura
+    // {
+    //   static std::size_t currentIndex{};
+    //   std::vector<std::string> comboItems{"brick", "rock", "paper",
+    //                                       "roman"};
 
-      ImGui::PushItemWidth(120);
-      if (ImGui::BeginCombo("Textura",
-                            comboItems.at(currentIndex).c_str())) {
+    //   ImGui::PushItemWidth(120);
+    //   if (ImGui::BeginCombo("Textura",
+    //                         comboItems.at(currentIndex).c_str())) {
 
-      for (std::size_t index = 0; index < comboItems.size(); ++index){
-        auto const isSelected{currentIndex == index};
-        if (ImGui::Selectable(comboItems.at(index).c_str(), isSelected)) {
-            currentIndex = index;
-            if (index == 0 ) {
-               atualizaTexturaNormal = "maps/brick_normal.jpg";
-               atualizaTexturaDifuse = "maps/brick_base.jpg"   ;
-            } else if (index == 1){
-                atualizaTexturaNormal = "maps/pattaern_normal.png";
-               atualizaTexturaDifuse = "maps/pattern.png"   ;
-            }
-            else  {
-                atualizaTexturaNormal = "maps/roman_lamp_normal.jpg";
-               atualizaTexturaDifuse =  "maps/roman_lamp_diffuse.jpg" ;
-            }
+    //   for (std::size_t index = 0; index < comboItems.size(); ++index){
+    //     auto const isSelected{currentIndex == index};
+    //     if (ImGui::Selectable(comboItems.at(index).c_str(), isSelected)) {
+    //         currentIndex = index;
+    //         if (index == 0 ) {
+    //            atualizaTexturaNormal = "maps/brick_normal.jpg";
+    //            atualizaTexturaDifuse = "maps/brick_base.jpg"   ;
+    //         } else if (index == 1){
+    //             atualizaTexturaNormal = "maps/rock.png";
+    //            atualizaTexturaDifuse = "maps/rock.png"   ;
+    //         } else if (index == 2){
+    //             atualizaTexturaNormal = "maps/paper.png";
+    //            atualizaTexturaDifuse = "maps/paper.png"   ;
+    //         }
+    //         else  {
+    //             atualizaTexturaNormal = "maps/roman_lamp_normal.jpg";
+    //            atualizaTexturaDifuse =  "maps/roman_lamp_diffuse.jpg" ;
+    //         }
+    //     }
+    // }
+
+    //   ImGui::EndCombo();
+    // }
+    //   ImGui::PopItemWidth();
+    // }
+
+// Controle de dificuldade e texturas
+
+// Controle de dificuldade e texturas
+
+// Controle de dificuldade e texturas
+
+// Variável global ou membro da classe
+static std::size_t textureIndex = 0;
+
+// Controle de dificuldade
+{
+  static DifficultyLevel currentDifficulty = DifficultyLevel::Easy;
+  const std::vector<std::string> difficultyOptions{"Easy", "Medium", "Hard"};
+  static int selectedDifficulty = 0;
+
+  ImGui::Text("Select Difficulty:");
+  ImGui::PushItemWidth(120);
+  if (ImGui::BeginCombo("Difficulty", difficultyOptions[selectedDifficulty].c_str())) {
+    for (int i = 0; i < difficultyOptions.size(); ++i) {
+      bool isSelected = (i == selectedDifficulty);
+      if (ImGui::Selectable(difficultyOptions[i].c_str(), isSelected)) {
+        selectedDifficulty = i;
+        currentDifficulty = static_cast<DifficultyLevel>(i);
+
+        // Resetar índice de textura ao mudar a dificuldade
+        textureIndex = 0;
+      }
+      if (isSelected) {
+        ImGui::SetItemDefaultFocus();
+      }
+    }
+    ImGui::EndCombo();
+  }
+  ImGui::PopItemWidth();
+}
+
+// Controle de seleção de textura
+{
+  std::vector<std::string> textureOptions;
+
+  // Define as opções de textura com base na dificuldade
+  if (currentDifficulty == DifficultyLevel::Easy) {
+    textureOptions = {"brick", "rock", "paper", "roman"};
+  } else if (currentDifficulty == DifficultyLevel::Medium) {
+    textureOptions = {"brick", "rock", "roman"};
+  } else if (currentDifficulty == DifficultyLevel::Hard) {
+    textureOptions = {"brick", "roman"};
+  }
+
+  ImGui::Text("Select Texture:");
+  ImGui::PushItemWidth(120);
+  if (ImGui::BeginCombo("Texture", textureOptions[textureIndex].c_str())) {
+    for (std::size_t i = 0; i < textureOptions.size(); ++i) {
+      bool isSelected = (i == textureIndex);
+      if (ImGui::Selectable(textureOptions[i].c_str(), isSelected)) {
+        textureIndex = i;
+
+        // Atualiza as texturas com base na seleção
+        if (textureOptions[i] == "brick") {
+          atualizaTexturaNormal = "maps/brick_normal.jpg";
+          atualizaTexturaDifuse = "maps/brick_base.jpg";
+        } else if (textureOptions[i] == "rock") {
+          atualizaTexturaNormal = "maps/rock.png";
+          atualizaTexturaDifuse = "maps/rock.png";
+        } else if (textureOptions[i] == "paper") {
+          atualizaTexturaNormal = "maps/paper.png";
+          atualizaTexturaDifuse = "maps/paper.png";
+        } else if (textureOptions[i] == "roman") {
+          atualizaTexturaNormal = "maps/roman_lamp_normal.jpg";
+          atualizaTexturaDifuse = "maps/roman_lamp_diffuse.jpg";
         }
+      }
+      if (isSelected) {
+        ImGui::SetItemDefaultFocus();
+      }
     }
+    ImGui::EndCombo();
+  }
+  ImGui::PopItemWidth();
+}
 
-      ImGui::EndCombo();
-    }
-      ImGui::PopItemWidth();
-    }
+
+
 
     
 
