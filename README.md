@@ -1,9 +1,9 @@
 
 # (7) PaintFaces (19.12.2024)
 
-André Rossini Bacchi    RA: 11201810247
-Gabriela Monaro Rodrigues   RA: 11201811530
-Milena Rocha de Camargo RA: 11201810122
+- André Rossini Bacchi    RA: 11201810247
+- Gabriela Monaro Rodrigues   RA: 11201811530
+- Milena Rocha de Camargo RA: 11201810122
   
 
 ## Tema
