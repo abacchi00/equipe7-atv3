@@ -1,0 +1,63 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v5.0.1588609223)
+
+mtllib result.mtl
+
+# 8 vertex positions
+v  0.098045073 0.097119786 0.099989988
+v  -0.10195493 -0.10288022 0.099989988
+v  -0.10195493 0.097119786 0.099989988
+v  0.098045073 -0.10288022 0.099989988
+v  -0.10195493 0.097119786 0.29999
+v  0.098045073 -0.10288022 0.29999
+v  0.098045073 0.097119786 0.29999
+v  -0.10195493 -0.10288022 0.29999
+
+# 0 UV coordinates
+
+# 6 vertex normals
+vn 0 0 -0.001
+vn 0 0 0.001
+vn 0.001 0 0
+vn -0.001 0 0
+vn 0 0.001 0
+vn 0 -0.001 0
+
+# Mesh 'mesh_id27' with 12 faces
+g mesh_id27
+usemtl 49
+f  1//1 2//1 3//1
+f  1//1 4//1 2//1
+f  5//2 6//2 7//2
+f  5//2 8//2 6//2
+f  7//3 4//3 1//3
+f  7//3 6//3 4//3
+f  3//4 8//4 5//4
+f  3//4 2//4 8//4
+f  3//5 7//5 1//5
+f  3//5 5//5 7//5
+f  8//6 4//6 6//6
+f  8//6 2//6 4//6
+
+#version 330 core
+
+in vec3 fragColor; // Cor recebida do vertex shader
+out vec4 outColor;
+
+void main() {
+  outColor = vec4(fragColor, 1.0); // Define a cor final
+}#version 330 core
+
+layout(location = 0) in vec3 inPosition;
+layout(location = 1) in vec3 inColor; // Entrada de cor
+
+out vec3 fragColor; // Cor enviada ao fragment shader
+
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projMatrix;
+
+void main() {
+  fragColor = inColor; // Passa a cor para o fragment shader
+  gl_Position = projMatrix * viewMatrix * modelMatrix * vec4(inPosition, 1.0);
+}
