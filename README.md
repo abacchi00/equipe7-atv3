@@ -1,17 +1,25 @@
-# Projeto 2 - Computação Gráfica
+# Projeto 3 - Computação Gráfica
 
 ## Tema
 
-Jogo interativo 3D para ensinar inglês: Ferramenta interativa para movimentação, manipulação de visualizações tridimensionais e ensino de inglês
+Exploração de Texturas e Iluminação em Ambientes 3D: Ferramenta interativa para renderização realista e manipulação de materiais e fontes de luz
 
-## Como executar a aplicação
+## Introdução
 
-1. Clone o repositório localmente. Entre na pasta `equipe7-atv2` e execute o script `build.bat` se estiver usando Windows, ou então o `build.sh` para Linux;
+Este projeto tem como tema "Texturas e Iluminação 3D" e busca explorar técnicas de computação gráfica aplicadas à renderização de cenas tridimensionais com foco na criação de ambientes visualmente realistas e interativos.
+
+Cenário de aplicação: O projeto visa criar uma cena 3D onde os usuários possam selecionar diferentes modelos e "pintar" suas faces utilizando o mouse com texturas variadas, além de manipular a iluminação da cena. Esse tipo de interação é útil em cenários educacionais e industriais, como design de produtos, arquitetura e jogos digitais.
+
+Objetivo final: Desenvolver uma aplicação interativa que permita aos usuários manipular texturas e iluminação de forma intuitiva e prática, incentivando o aprendizado e experimentação com conceitos gráficos.
+
+## Guia de utilização da aplicação final
+
+1. Clone o repositório localmente. Entre na pasta `equipe7-atv3` e execute o script `build.bat` se estiver usando Windows, ou então o `build.sh` para Linux;
 
 2. Abra um terminal e execute o comando:
 
-- Para Windows: `.\build\bin\projeto2\projeto2.exe | cat`
-- Para Linux: `./build/bin/projeto2/projeto2 | cat`
+- Para Windows: `.\build\bin\paintFaces\paintFaces | cat`
+- Para Linux: `./build/bin/paintFaces/paintFaces | cat`
 
 A janela interativa deve ser aberta em seguida;
 
@@ -20,60 +28,37 @@ A janela interativa deve ser aberta em seguida;
 - Para Windows: `build-wasm.bat && runweb.bat`
 - Para Linux: `./build-wasm.sh && ./runweb.sh`
 
-Você pode também visualizar a aplicação compilada através do link: [Link para o app](https://abacchi00.github.io/equipe7-atv2/public/projeto2.html)
+Você pode também visualizar a aplicação compilada através do link: [Link para o app](https://abacchi00.github.io/equipe7-atv3/public/projeto3.html)
 
-## Detalhes da implementação
+## Projeto e desenvolvimento
 
-A implementação do projeto envolveu várias técnicas de computação gráfica e interatividade, utilizando principalmente **C++**, **OpenGL** e bibliotecas auxiliares como **SDL2** e **ImGui**. A seguir, são descritas as principais técnicas utilizadas na construção da aplicação:
+TODO
 
-### 1. **Movimentação da Câmera em 3D**
+## Problemas e soluções:
 
-A movimentação da câmera é uma das partes fundamentais do projeto. A câmera 3D foi configurada para permitir os seguintes tipos de movimento, baseados na interação do usuário com o teclado:
+Problema: Foi necessário fazer com que cada face de um modelo 3D fosse tratada de forma independente para aplicação das texturas. Isso exigiu duplicar vértices compartilhados, mesmo que tenham as mesmas coordenadas.
 
-- **Dolly**: Movimento de aproximação e afastamento da câmera, ajustado pela velocidade controlada pelas teclas `W` (aproximar) e `S` (afastar).
-- **Pan**: Movimento de rotação ao redor do eixo horizontal da câmera, controlado pelas teclas `A` (rotacionar à esquerda) e `D` (rotacionar à direita).
-- **Truck**: Movimento lateral, controlado pelas teclas `Q` (mover para a esquerda) e `E` (mover para a direita).
+Solução: A duplicação foi feita manualmente durante o processo de mapeamento de texturas.
 
-Cada um desses movimentos utiliza um conceito de aceleração e desaceleração. A aceleração aumenta a velocidade do movimento até atingir um valor máximo, enquanto a desaceleração suaviza a parada quando as teclas não são pressionadas.
+Problema: A seleção da face mais próxima da tela não garante que a face clicada seja sempre a correta.
 
-### 2. **Desaceleração de Movimento**
+Solução futura: Melhorar a lógica de detecção para pintar a face onde o clique de fato ocorreu, considerando coordenadas de tela e profundidade.
 
-A desaceleração de movimento é aplicada automaticamente quando o usuário solta as teclas de movimento. Para isso, verificamos se a velocidade de cada tipo de movimento (dolly, pan, truck) é diferente de zero e, se for o caso, a velocidade é gradualmente reduzida até que o movimento pare completamente. Esse comportamento cria uma sensação de movimento suave e realista.
+## Resultados e análise
 
-- **Cálculo da desaceleração**: A desaceleração é feita subtraindo um valor constante da velocidade atual, até que a velocidade atinja zero. O valor da desaceleração é configurável e foi ajustado para garantir uma transição suave.
+Aspectos computacionais: A aplicação atingiu um desempenho satisfatório, com renderização fluida e interatividade responsiva.
 
-### 3. **Renderização Gráfica com OpenGL**
+Resultados visuais: A aplicação de texturas e iluminação proporcionou uma experiência gráfica rica e interativa.
 
-A renderização do ambiente 3D foi realizada utilizando a API **OpenGL**, que oferece as ferramentas necessárias para desenhar e manipular objetos 3D. Os objetos são representados por malhas (meshes), que são carregadas e renderizadas na tela.
+## Conclusões
 
-- **Shaders**: A aplicação faz uso de shaders em OpenGL para aplicar efeitos visuais aos objetos 3D, como iluminação básica, efeitos de texturização e transparência.
-- **Buffers de vértices**: Para otimizar a renderização, os objetos 3D são armazenados em buffers de vértices, que são então passados para o pipeline gráfico do OpenGL.
+O projeto alcançou seus objetivos de implementar texturas e iluminação realistas em um ambiente 3D interativo. Destacamos:
 
-### 4. **Interação com Modelos 3D (Click-to-Action)**
+Pontos de destaque: Uso efetivo de shaders, interatividade bem implementada.
 
-A aplicação permite ao usuário interagir com objetos 3D no ambiente, utilizando cliques do mouse para selecionar e ativar modelos. Para isso, a interação é tratada da seguinte forma:
+Limitações: Necessidade de melhorar a precisão da seleção de faces.
 
-- **Detecção de cliques**: Usamos a biblioteca **SDL2** para capturar os eventos de clique do mouse. Quando o usuário clica na tela, a posição do clique é convertida de coordenadas de tela para coordenadas no espaço 3D.
-- **Raycasting**: A técnica de **raycasting** é utilizada para determinar qual objeto na cena foi clicado. Um "raio" é projetado a partir da posição da câmera em direção à posição do mouse, e verifica-se qual objeto está mais próximo ao raio.
-- **Ação no objeto**: Ao detectar o objeto clicado, o sistema pode realizar ações associadas a ele, como exibir um texto, ativar animações ou mudar o estado de alguma propriedade visual do objeto (como cor ou forma).
+## Trabalhos futuros
 
-### 5. **Interface Gráfica com ImGui**
-
-Para facilitar a criação da interface de controle e fornecer feedback visual ao usuário, foi utilizada a biblioteca **ImGui**. Através dela, foi possível criar controles interativos, como botões, sliders e caixas de texto, para ajustar os parâmetros da cena (como a velocidade dos movimentos da câmera e a intensidade das interações).
-
-### 6. **Ensino de Inglês Interativo**
-
-A aplicação não se limita apenas à exploração gráfica, mas também incorpora um módulo de ensino de inglês. Por meio da interação com objetos 3D, o usuário pode acessar informações sobre vocabulário e frases, com foco em termos relacionados ao contexto da cena.
-
-- **Exibição de texto**: Ao clicar em certos objetos ou áreas da cena, o usuário é apresentado a traduções, palavras ou frases em inglês, associadas ao objeto ou à ação realizada.
-- **Contextualização**: O aprendizado do inglês ocorre de maneira contextual, ou seja, as palavras e expressões são apresentadas de forma a serem facilmente compreendidas pelo usuário, utilizando a visualização 3D como suporte.
-
-### 7. **Compilação Web (WASM)**
-
-Além da versão desktop, a aplicação foi compilada para a web utilizando **WebAssembly (WASM)**, permitindo que a ferramenta seja acessada diretamente em navegadores. A versão WASM utiliza os mesmos conceitos gráficos e interativos, mas é otimizada para rodar no navegador de forma eficiente.
-
-- **Compilação para WASM**: A aplicação foi configurada para compilar os arquivos C++ diretamente para WASM utilizando ferramentas como Emscripten, permitindo que o código C++ seja executado no navegador sem a necessidade de plugins adicionais.
-
-## Justificativa
-
-A escolha deste tema foi motivada pela necessidade de criar uma ferramenta de visualização interativa e manipulável em 3D, que permitisse explorar diferentes tipos de movimentos de câmera em uma cena. Além disso, como parte da inovação pedagógica, o projeto também integra um componente de ensino de inglês, utilizando a visualização 3D como meio de ensino de vocabulário e expressões, promovendo o aprendizado contextual.
+- Refinar o sistema de seleção de faces para garantir precisão ao clicar.
+- Expandir o projeto com mapeamento de sombras e texturas procedurais.
